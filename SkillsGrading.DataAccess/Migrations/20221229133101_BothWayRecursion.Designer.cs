@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkillsGrading.DataAccess.Infrastructure;
 
@@ -11,9 +12,11 @@ using SkillsGrading.DataAccess.Infrastructure;
 namespace SkillsGrading.DataAccess.Migrations
 {
     [DbContext(typeof(GradingContext))]
-    partial class GradingContextModelSnapshot : ModelSnapshot
+    [Migration("20221229133101_BothWayRecursion")]
+    partial class BothWayRecursion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

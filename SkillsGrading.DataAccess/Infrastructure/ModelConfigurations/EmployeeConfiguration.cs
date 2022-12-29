@@ -16,7 +16,8 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
             builder.Property(e => e.IsActive).IsRequired();
             builder.Property(e => e.GraderId).IsRequired();
             builder.HasOne(e => e.Grader)
-                .WithOne()
+                .WithMany(e => e.Gradees)
+                .HasForeignKey(e => e.GraderId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

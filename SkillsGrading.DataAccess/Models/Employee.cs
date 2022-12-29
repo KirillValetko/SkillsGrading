@@ -9,6 +9,7 @@
         public Guid GraderId { get; set; }
 
         public Employee Grader { get; set; }
+        public List<Employee> Gradees { get; set; }
         public List<Grade> Grades { get; set; }
     }
 }
