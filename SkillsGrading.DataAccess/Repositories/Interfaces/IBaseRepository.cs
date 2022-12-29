@@ -19,7 +19,7 @@ namespace SkillsGrading.DataAccess.Repositories.Interfaces
         Task HardDeleteAsync(Guid id);
         Task HardDeleteManyAsync(List<Guid> ids);
         Task<TDataModel> GetByFilterAsync(TFilter filter);
-        Task<List<TDataModel>> GetAllByFilter(TFilter filter);
-        Task<PaginationResponse<TDataModel>> GetPaginated(PaginationRequest<TFilter> request);
+        Task<List<TDataModel>> GetAllByFilterAsync(TFilter filter);
+        Task<PaginationResponse<TDataModel>> GetPaginatedAsync(PaginationRequest<TFilter> request);
     }
 }

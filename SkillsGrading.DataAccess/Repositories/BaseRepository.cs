@@ -132,7 +132,7 @@ namespace SkillsGrading.DataAccess.Repositories
             return mappedItem;
         }
 
-        public async Task<List<TDataModel>> GetAllByFilter(TFilter filter)
+        public async Task<List<TDataModel>> GetAllByFilterAsync(TFilter filter)
         {
             var source = ConstructFilter(filter);
 
@@ -142,7 +142,7 @@ namespace SkillsGrading.DataAccess.Repositories
             return mappedItems;
         }
 
-        public async Task<PaginationResponse<TDataModel>> GetPaginated(PaginationRequest<TFilter> request)
+        public async Task<PaginationResponse<TDataModel>> GetPaginatedAsync(PaginationRequest<TFilter> request)
         {
             var source = ConstructFilter(request.Filter);
 
