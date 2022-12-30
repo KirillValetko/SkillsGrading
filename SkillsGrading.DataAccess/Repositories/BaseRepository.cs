@@ -33,12 +33,14 @@ namespace SkillsGrading.DataAccess.Repositories
         public virtual void Create(TDataModel item)
         {
             var mappedItem = _mapper.Map<TDbModel>(item);
+            PrepareForCreation(mappedItem);
             _gradingContext.Set<TDbModel>().Add(mappedItem);
         }
 
         public virtual void CreateMany(List<TDataModel> items)
         {
             var mappedItems = _mapper.Map<List<TDbModel>>(items);
+            mappedItems.ForEach(PrepareForCreation);
             _gradingContext.Set<TDbModel>().AddRange(mappedItems);
         }
 
@@ -52,6 +54,7 @@ namespace SkillsGrading.DataAccess.Repositories
             }
 
             var mappedItem = _mapper.Map<TDbModel>(item);
+            SaveImportantInfo(dbItem, mappedItem);
             _mapper.Map(mappedItem, dbItem);
         }
 
@@ -70,6 +73,7 @@ namespace SkillsGrading.DataAccess.Repositories
             foreach (var item in mappedItems)
             {
                 var dbItem = dbItems.FirstOrDefault(i => i.Id.Equals(item.Id));
+                SaveImportantInfo(dbItem, item);
                 _mapper.Map(item, dbItem);
             }
         }
@@ -152,9 +156,21 @@ namespace SkillsGrading.DataAccess.Repositories
             return mappedResponse;
         }
 
+        protected virtual void PrepareForCreation(TDbModel item)
+        {
+            item.Id = Guid.NewGuid();
+            item.IsActive = true;
+        }
+
+        protected virtual void SaveImportantInfo(TDbModel beforeSave, TDbModel forSave)
+        {
+            forSave.Id = beforeSave.Id;
+            forSave.IsActive = beforeSave.IsActive;
+        }
+
         private IQueryable<TDbModel> ConstructFilter(TFilter filter)
         {
-            var items = _gradingContext.Set<TDbModel>().AsNoTracking();
+            var items = _gradingContext.Set<TDbModel>().AsNoTracking().Where(i => i.IsActive);
 
             if (filter.Id.HasValue)
             {
