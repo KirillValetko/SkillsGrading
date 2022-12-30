@@ -17,9 +17,9 @@ namespace SkillsGrading.DataAccess.Repositories
         where TDataModel : BaseDataModel
         where TFilter : BaseFilter
     {
-        private readonly GradingContext _gradingContext;
-        private readonly IPaginationHelper<TDbModel> _paginationHelper;
-        private readonly IMapper _mapper;
+        protected readonly GradingContext _gradingContext;
+        protected readonly IPaginationHelper<TDbModel> _paginationHelper;
+        protected readonly IMapper _mapper;
 
         protected BaseRepository(GradingContext gradingContext,
             IPaginationHelper<TDbModel> paginationHelper,
@@ -30,19 +30,19 @@ namespace SkillsGrading.DataAccess.Repositories
             _mapper = mapper;
         }
 
-        public void Create(TDataModel item)
+        public virtual void Create(TDataModel item)
         {
             var mappedItem = _mapper.Map<TDbModel>(item);
             _gradingContext.Set<TDbModel>().Add(mappedItem);
         }
 
-        public void CreateMany(List<TDataModel> items)
+        public virtual void CreateMany(List<TDataModel> items)
         {
             var mappedItems = _mapper.Map<List<TDbModel>>(items);
             _gradingContext.Set<TDbModel>().AddRange(mappedItems);
         }
 
-        public async Task UpdateAsync(TDataModel item)
+        public virtual async Task UpdateAsync(TDataModel item)
         {
             var dbItem = await _gradingContext.Set<TDbModel>().FirstOrDefaultAsync(i => i.Id.Equals(item.Id));
 
@@ -55,7 +55,7 @@ namespace SkillsGrading.DataAccess.Repositories
             _mapper.Map(mappedItem, dbItem);
         }
 
-        public async Task UpdateManyAsync(List<TDataModel> items)
+        public virtual async Task UpdateManyAsync(List<TDataModel> items)
         {
             var itemIds = items.Select(i => i.Id).ToList();
             var dbItems = await _gradingContext.Set<TDbModel>().Where(i => itemIds.Contains(i.Id)).ToListAsync();
@@ -74,7 +74,7 @@ namespace SkillsGrading.DataAccess.Repositories
             }
         }
 
-        public async Task SoftDeleteAsync(Guid id)
+        public virtual async Task SoftDeleteAsync(Guid id)
         {
             var dbItem = await _gradingContext.Set<TDbModel>().FirstOrDefaultAsync(i => i.Id.Equals(id));
 
@@ -86,7 +86,7 @@ namespace SkillsGrading.DataAccess.Repositories
             dbItem.IsActive = false;
         }
 
-        public async Task SoftDeleteManyAsync(List<Guid> ids)
+        public virtual async Task SoftDeleteManyAsync(List<Guid> ids)
         {
             var dbItems = await _gradingContext.Set<TDbModel>().Where(i => ids.Contains(i.Id)).ToListAsync();
 
@@ -98,7 +98,7 @@ namespace SkillsGrading.DataAccess.Repositories
             dbItems.ForEach(i => i.IsActive = false);
         }
 
-        public async Task HardDeleteAsync(Guid id)
+        public virtual async Task HardDeleteAsync(Guid id)
         {
             var dbItem = await _gradingContext.Set<TDbModel>().FirstOrDefaultAsync(i => i.Id.Equals(id));
 
@@ -110,7 +110,7 @@ namespace SkillsGrading.DataAccess.Repositories
             _gradingContext.Set<TDbModel>().Remove(dbItem);
         }
 
-        public async Task HardDeleteManyAsync(List<Guid> ids)
+        public virtual async Task HardDeleteManyAsync(List<Guid> ids)
         {
             var dbItems = await _gradingContext.Set<TDbModel>().Where(i => ids.Contains(i.Id)).ToListAsync();
 

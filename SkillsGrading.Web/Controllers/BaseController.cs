@@ -9,10 +9,10 @@ namespace SkillsGrading.Web.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly ILogger<BaseController> _logger;
+        protected readonly IMapper _mapper;
+        protected readonly ILogger<BaseController> _logger;
 
-        public BaseController(IMapper mapper,
+        protected BaseController(IMapper mapper,
             ILogger<BaseController> logger)
         {
             _mapper = mapper;

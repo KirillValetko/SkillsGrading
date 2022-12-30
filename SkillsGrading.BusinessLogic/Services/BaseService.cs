@@ -16,9 +16,9 @@ namespace SkillsGrading.BusinessLogic.Services
         where TModel : BaseModel
         where TFilter : BaseFilter
     {
-        private readonly IBaseRepository<TDbModel, TDataModel, TFilter> _repository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        protected readonly IBaseRepository<TDbModel, TDataModel, TFilter> _repository;
+        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IMapper _mapper;
 
         protected BaseService(IBaseRepository<TDbModel, TDataModel, TFilter> repository,
             IUnitOfWork unitOfWork,
@@ -29,27 +29,27 @@ namespace SkillsGrading.BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task CreateAsync(TModel item)
+        public virtual async Task CreateAsync(TModel item)
         {
             var mappedItem = _mapper.Map<TDataModel>(item);
             _repository.Create(mappedItem);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task UpdateAsync(TModel item)
+        public virtual async Task UpdateAsync(TModel item)
         {
             var mappedItem = _mapper.Map<TDataModel>(item);
             await _repository.UpdateAsync(mappedItem);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task DeleteAsync(Guid id)
+        public virtual async Task DeleteAsync(Guid id)
         {
             await _repository.SoftDeleteAsync(id);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<TModel> GetByFilterAsync(TFilter filter)
+        public virtual async Task<TModel> GetByFilterAsync(TFilter filter)
         {
             var item = await _repository.GetByFilterAsync(filter);
             var mappedItem = _mapper.Map<TModel>(item);
@@ -57,7 +57,7 @@ namespace SkillsGrading.BusinessLogic.Services
             return mappedItem;
         }
 
-        public async Task<List<TModel>> GetAllByFilterAsync(TFilter filter)
+        public virtual async Task<List<TModel>> GetAllByFilterAsync(TFilter filter)
         {
             var items = await _repository.GetAllByFilterAsync(filter);
             var mappedItems = _mapper.Map<List<TModel>>(items);
@@ -65,7 +65,7 @@ namespace SkillsGrading.BusinessLogic.Services
             return mappedItems;
         }
 
-        public async Task<PaginationResponse<TModel>> GetPaginatedAsync(PaginationRequest<TFilter> request)
+        public virtual async Task<PaginationResponse<TModel>> GetPaginatedAsync(PaginationRequest<TFilter> request)
         {
             var response = await _repository.GetPaginatedAsync(request);
             var mappedResponse = _mapper.Map<PaginationResponse<TModel>>(response);
