@@ -8,6 +8,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.InitDbContext(builder.Configuration);
 builder.Services.InitRepositories();
 builder.Services.InitServices();
+builder.Services.InitHelpers();
 builder.Services.InitMapper();
 builder.Services.InitJwt();
 builder.Services.InitSwagger();
