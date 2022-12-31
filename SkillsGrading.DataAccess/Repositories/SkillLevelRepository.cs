@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SkillsGrading.Common.Helpers.Interfaces;
 using SkillsGrading.DataAccess.DataModels;
 using SkillsGrading.DataAccess.Filters;
@@ -37,6 +38,12 @@ namespace SkillsGrading.DataAccess.Repositories
             }
 
             return items;
+        }
+
+        protected override void PrepareForCreation(SkillLevel item)
+        {
+            base.PrepareForCreation(item);
+            item.IsUsed = false;
         }
     }
 }
