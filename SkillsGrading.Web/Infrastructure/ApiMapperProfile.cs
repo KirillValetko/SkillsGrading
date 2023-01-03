@@ -10,6 +10,10 @@ namespace SkillsGrading.Web.Infrastructure
     {
         public ApiMapperProfile()
         {
+            CreateMap<PaginationResponse<SkillModel>, PaginationResponse<SkillViewModel>>();
+            CreateMap<SkillModel, SkillViewModel>();
+            CreateMap<SkillDto, SkillModel>().ForMember(dest => dest.GroupId, 
+                opt => opt.MapFrom(src => src.SkillGroup.Id));
             CreateMap<PaginationResponse<SkillGroupModel>, PaginationResponse<SkillGroupViewModel>>();
             CreateMap<SkillGroupModel, SkillGroupViewModel>();
             CreateMap<SkillGroupDto, SkillGroupModel>();

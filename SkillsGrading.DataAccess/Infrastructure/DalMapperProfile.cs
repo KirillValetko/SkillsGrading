@@ -9,6 +9,8 @@ namespace SkillsGrading.DataAccess.Infrastructure
     {
         public DalMapperProfile()
         {
+            CreateMap<PaginationResponse<Skill>, PaginationResponse<SkillDataModel>>();
+            CreateMap<Skill, SkillDataModel>().ReverseMap();
             CreateMap<PaginationResponse<SkillGroup>, PaginationResponse<SkillGroupDataModel>>();
             CreateMap<SkillGroup, SkillGroupDataModel>().ReverseMap();
             CreateMap<PaginationResponse<SkillLevel>, PaginationResponse<SkillLevelDataModel>>();
