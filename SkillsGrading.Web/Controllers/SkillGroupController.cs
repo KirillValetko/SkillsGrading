@@ -50,12 +50,5 @@ namespace SkillsGrading.Web.Controllers
         {
             return ProcessRequest<SkillGroupViewModel>(() => _skillGroupService.DeleteAsync(id));
         }
-
-        [HttpGet("SkillLevels")]
-        public Task<IActionResult> GetAsync(Guid id)
-        {
-            return ProcessRequest<List<SkillLevelModel>, List<SkillLevelViewModel>>(() =>
-                _skillGroupService.GetSkillLevelsAsync(id));
-        }
     }
 }
