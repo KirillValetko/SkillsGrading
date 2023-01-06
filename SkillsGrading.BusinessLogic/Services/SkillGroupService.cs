@@ -34,10 +34,10 @@ namespace SkillsGrading.BusinessLogic.Services
 
             var mappedSkillGroup = _mapper.Map<SkillGroupDataModel>(item);
             var skillLevelsToCreate = mappedSkillGroup.SkillLevels
-                .Where(i => i.Id.Equals(Guid.Empty))
+                .Where(skillLevel => skillLevel.Id.Equals(Guid.Empty))
                 .ToList();
             var skillLevelsToDelete = dbItem.SkillLevels
-                .ExceptBy(mappedSkillGroup.SkillLevels.Select(i => i.Id), i => i.Id)
+                .ExceptBy(mappedSkillGroup.SkillLevels.Select(skillLevel => skillLevel.Id), skillLevel => skillLevel.Id)
                 .ToList();
 
             if (dbItem.IsUsed)
@@ -46,13 +46,13 @@ namespace SkillsGrading.BusinessLogic.Services
                 var usedSkillLevelsToUpdate = new List<SkillLevelDataModel>();
                 var unusedSkillLevelsToUpdate = new List<SkillLevelDataModel>();
 
-                foreach (var skillLevel in skillLevelsToCheck)
+                foreach (var skillLevelToCheck in skillLevelsToCheck)
                 {
                     var modifiedSkillLevel = mappedSkillGroup.SkillLevels
-                        .FirstOrDefault(i => i.Id.Equals(skillLevel.Id));
-                    if (!skillLevel.Equals(modifiedSkillLevel))
+                        .FirstOrDefault(skillLevel => skillLevel.Id.Equals(skillLevel.Id));
+                    if (!skillLevelToCheck.Equals(modifiedSkillLevel))
                     {
-                        if (skillLevel.IsUsed)
+                        if (skillLevelToCheck.IsUsed)
                         {
                             usedSkillLevelsToUpdate.Add(modifiedSkillLevel);
                         }
@@ -66,17 +66,17 @@ namespace SkillsGrading.BusinessLogic.Services
                 await _skillLevelRepository.UpdateManyAsync(unusedSkillLevelsToUpdate);
 
                 var usedSkillLevelIdsToUpdate = usedSkillLevelsToUpdate
-                    .Select(i => i.Id)
+                    .Select(skillLevel => skillLevel.Id)
                     .ToList();
 
                 var skillLevelsIdsToHardDelete = skillLevelsToDelete
-                    .Where(i => !i.IsUsed)
-                    .Select(i => i.Id)
+                    .Where(skillLevel => !skillLevel.IsUsed)
+                    .Select(skillLevel => skillLevel.Id)
                     .ToList();
                 await _skillLevelRepository.HardDeleteManyAsync(skillLevelsIdsToHardDelete);
 
                 var skillLevelIdsToSoftDelete = skillLevelsToDelete
-                    .Select(i => i.Id)
+                    .Select(skillLevel => skillLevel.Id)
                     .Except(skillLevelsIdsToHardDelete)
                     .ToList();
                 skillLevelIdsToSoftDelete.AddRange(usedSkillLevelIdsToUpdate);
@@ -88,7 +88,7 @@ namespace SkillsGrading.BusinessLogic.Services
             else
             {
                 _skillLevelRepository.CreateMany(skillLevelsToCreate);
-                var skillLevelsIdsToDelete = skillLevelsToDelete.Select(i => i.Id).ToList();
+                var skillLevelsIdsToDelete = skillLevelsToDelete.Select(skillLevel => skillLevel.Id).ToList();
                 await _skillLevelRepository.HardDeleteManyAsync(skillLevelsIdsToDelete);
             }
 
@@ -105,7 +105,7 @@ namespace SkillsGrading.BusinessLogic.Services
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
             }
 
-            var skillLevelIds = skillGroup.SkillLevels.Select(i => i.Id).ToList();
+            var skillLevelIds = skillGroup.SkillLevels.Select(skillLevel => skillLevel.Id).ToList();
 
             if (skillGroup.IsUsed)
             {
@@ -119,14 +119,6 @@ namespace SkillsGrading.BusinessLogic.Services
             }
 
             await _unitOfWork.SaveAsync();
-        }
-
-        public async Task<List<SkillLevelModel>> GetSkillLevelsAsync(Guid id)
-        {
-            var skillGroup = await GetByFilterAsync(new SkillGroupFilter { Id = id });
-            var skillLevels = skillGroup.SkillLevels;
-
-            return skillLevels;
         }
     }
 }

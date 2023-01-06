@@ -8,6 +8,5 @@ namespace SkillsGrading.BusinessLogic.Services.Interfaces
     public interface ISkillGroupService : 
         IBaseService<SkillGroup, SkillGroupDataModel, SkillGroupModel, SkillGroupFilter>
     {
-        Task<List<SkillLevelModel>> GetSkillLevelsAsync(Guid id);
     }
 }

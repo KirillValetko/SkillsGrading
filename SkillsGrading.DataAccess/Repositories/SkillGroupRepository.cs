@@ -24,13 +24,13 @@ namespace SkillsGrading.DataAccess.Repositories
         {
             if (!string.IsNullOrEmpty(filter.GroupName))
             {
-                items = items.Where(x => x.GroupName.Contains(filter.GroupName));
+                items = items.Where(skillGroup => skillGroup.GroupName.Contains(filter.GroupName));
             }
 
-            items = items.Include(i => 
-                i.SkillLevels
-                .Where(j => j.IsActive)
-                .OrderBy(j => j.LevelValue));
+            items = items.Include(group => 
+                group.SkillLevels
+                .Where(skillLevel => skillLevel.IsActive)
+                .OrderBy(skillLevel => skillLevel.LevelValue));
 
             return items;
         }
