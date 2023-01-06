@@ -172,6 +172,11 @@ namespace SkillsGrading.DataAccess.Repositories
         {
             var items = _gradingContext.Set<TDbModel>().AsNoTracking().Where(i => i.IsActive);
 
+            if (filter == null)
+            {
+                return items;
+            }
+
             if (filter.Id.HasValue)
             {
                 items = items.Where(i => i.Id.Equals(filter.Id.Value));
@@ -182,7 +187,7 @@ namespace SkillsGrading.DataAccess.Repositories
                 items = items.Where(i => filter.Ids.Contains(i.Id));
             }
 
-            AddFilterConditions(items, filter);
+            items = AddFilterConditions(items, filter);
 
             return items;
         } 
