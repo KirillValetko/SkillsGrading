@@ -52,10 +52,9 @@ namespace SkillsGrading.DataAccess.Repositories
             {
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
             }
-
-            var mappedItem = _mapper.Map<TDbModel>(item);
-            SaveImportantInfo(dbItem, mappedItem);
-            _mapper.Map(mappedItem, dbItem);
+            
+            SaveImportantInfo(dbItem, item);
+            _mapper.Map(item, dbItem);
         }
 
         public virtual async Task UpdateManyAsync(List<TDataModel> items)
@@ -68,9 +67,7 @@ namespace SkillsGrading.DataAccess.Repositories
                 throw new Exception(ExceptionMessageConstants.EntitiesAreNotFound);
             }
 
-            var mappedItems = _mapper.Map<List<TDbModel>>(items);
-            
-            foreach (var item in mappedItems)
+            foreach (var item in items)
             {
                 var dbItem = dbItems.FirstOrDefault(i => i.Id.Equals(item.Id));
                 SaveImportantInfo(dbItem, item);
@@ -162,7 +159,7 @@ namespace SkillsGrading.DataAccess.Repositories
             item.IsActive = true;
         }
 
-        protected virtual void SaveImportantInfo(TDbModel beforeSave, TDbModel forSave)
+        protected virtual void SaveImportantInfo(TDbModel beforeSave, TDataModel forSave)
         {
             forSave.Id = beforeSave.Id;
             forSave.IsActive = beforeSave.IsActive;
