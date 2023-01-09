@@ -39,8 +39,10 @@ namespace SkillsGrading.DataAccess.Repositories
         {
             base.PrepareForCreation(item);
             item.IsUsed = false;
+            
             foreach (var skillLevel in item.SkillLevels)
             {
+                skillLevel.Id = Guid.NewGuid();
                 skillLevel.IsActive = true;
                 skillLevel.IsUsed = false;
             }
