@@ -23,7 +23,7 @@ namespace SkillsGrading.Web.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAsync(PaginationRequest<SkillGroupFilter> request)
+        public Task<IActionResult> GetAsync([FromQuery]PaginationRequest<SkillGroupFilter> request)
         {
             return ProcessRequest<PaginationResponse<SkillGroupModel>, PaginationResponse<SkillGroupViewModel>>(() => 
                 _skillGroupService.GetPaginatedAsync(request));
