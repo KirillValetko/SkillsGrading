@@ -15,7 +15,7 @@ namespace SkillsGrading.DataAccess.Repositories
         IBaseRepository<TDbModel, TDataModel, TFilter>
         where TDbModel : BaseDbModel
         where TDataModel : BaseDataModel
-        where TFilter : BaseFilter
+        where TFilter : BaseFilter, new()
     {
         protected readonly GradingContext _gradingContext;
         protected readonly IPaginationHelper<TDbModel> _paginationHelper;
@@ -52,10 +52,9 @@ namespace SkillsGrading.DataAccess.Repositories
             {
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
             }
-
-            var mappedItem = _mapper.Map<TDbModel>(item);
-            SaveImportantInfo(dbItem, mappedItem);
-            _mapper.Map(mappedItem, dbItem);
+            
+            SaveImportantInfo(dbItem, item);
+            _mapper.Map(item, dbItem);
         }
 
         public virtual async Task UpdateManyAsync(List<TDataModel> items)
@@ -68,9 +67,7 @@ namespace SkillsGrading.DataAccess.Repositories
                 throw new Exception(ExceptionMessageConstants.EntitiesAreNotFound);
             }
 
-            var mappedItems = _mapper.Map<List<TDbModel>>(items);
-            
-            foreach (var item in mappedItems)
+            foreach (var item in items)
             {
                 var dbItem = dbItems.FirstOrDefault(i => i.Id.Equals(item.Id));
                 SaveImportantInfo(dbItem, item);
@@ -162,7 +159,7 @@ namespace SkillsGrading.DataAccess.Repositories
             item.IsActive = true;
         }
 
-        protected virtual void SaveImportantInfo(TDbModel beforeSave, TDbModel forSave)
+        protected virtual void SaveImportantInfo(TDbModel beforeSave, TDataModel forSave)
         {
             forSave.Id = beforeSave.Id;
             forSave.IsActive = beforeSave.IsActive;
@@ -170,7 +167,14 @@ namespace SkillsGrading.DataAccess.Repositories
 
         private IQueryable<TDbModel> ConstructFilter(TFilter filter)
         {
-            var items = _gradingContext.Set<TDbModel>().AsNoTracking().Where(i => i.IsActive);
+            var items = _gradingContext.Set<TDbModel>().Where(i => i.IsActive);
+
+            filter ??= new TFilter();
+
+            if (!filter.IsTracking.HasValue || !filter.IsTracking.Value)
+            {
+                items = items.AsNoTracking();
+            }
 
             if (filter.Id.HasValue)
             {
@@ -182,7 +186,7 @@ namespace SkillsGrading.DataAccess.Repositories
                 items = items.Where(i => filter.Ids.Contains(i.Id));
             }
 
-            AddFilterConditions(items, filter);
+            items = AddFilterConditions(items, filter);
 
             return items;
         } 

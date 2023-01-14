@@ -23,7 +23,7 @@ namespace SkillsGrading.Web.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAsync(PaginationRequest<SkillGroupFilter> request)
+        public Task<IActionResult> GetAsync([FromQuery]PaginationRequest<SkillGroupFilter> request)
         {
             return ProcessRequest<PaginationResponse<SkillGroupModel>, PaginationResponse<SkillGroupViewModel>>(() => 
                 _skillGroupService.GetPaginatedAsync(request));
@@ -49,13 +49,6 @@ namespace SkillsGrading.Web.Controllers
         public Task<IActionResult> DeleteAsync(Guid id)
         {
             return ProcessRequest<SkillGroupViewModel>(() => _skillGroupService.DeleteAsync(id));
-        }
-
-        [HttpGet("SkillLevels")]
-        public Task<IActionResult> GetAsync(Guid id)
-        {
-            return ProcessRequest<List<SkillLevelModel>, List<SkillLevelViewModel>>(() =>
-                _skillGroupService.GetSkillLevelsAsync(id));
         }
     }
 }

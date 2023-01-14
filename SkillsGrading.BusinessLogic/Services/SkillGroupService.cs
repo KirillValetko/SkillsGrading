@@ -13,19 +13,15 @@ namespace SkillsGrading.BusinessLogic.Services
         BaseService<SkillGroup, SkillGroupDataModel, SkillGroupModel, SkillGroupFilter>,
         ISkillGroupService
     {
-        private readonly ISkillLevelRepository _skillLevelRepository;
-
         public SkillGroupService(ISkillGroupRepository repository,
-            ISkillLevelRepository skillLevelRepository,
             IUnitOfWork unitOfWork,
             IMapper mapper) : base(repository, unitOfWork, mapper)
         {
-            _skillLevelRepository = skillLevelRepository;
         }
 
         public override async Task UpdateAsync(SkillGroupModel item)
         {
-            var dbItem = await _repository.GetByFilterAsync(new SkillGroupFilter { Id = item.Id });
+            var dbItem = await _repository.GetByFilterAsync(new SkillGroupFilter { Id = item.Id, IsTracking = true });
 
             if (dbItem == null)
             {
@@ -33,63 +29,49 @@ namespace SkillsGrading.BusinessLogic.Services
             }
 
             var mappedSkillGroup = _mapper.Map<SkillGroupDataModel>(item);
-            var skillLevelsToCreate = mappedSkillGroup.SkillLevels
-                .Where(i => i.Id.Equals(Guid.Empty))
-                .ToList();
-            var skillLevelsToDelete = dbItem.SkillLevels
-                .ExceptBy(mappedSkillGroup.SkillLevels.Select(i => i.Id), i => i.Id)
-                .ToList();
 
             if (dbItem.IsUsed)
             {
-                var skillLevelsToCheck = dbItem.SkillLevels.Except(skillLevelsToDelete).ToList();
-                var usedSkillLevelsToUpdate = new List<SkillLevelDataModel>();
-                var unusedSkillLevelsToUpdate = new List<SkillLevelDataModel>();
+                var skillLevels = new List<SkillLevelDataModel>();
+                var skillLevelsToCreate = mappedSkillGroup.SkillLevels
+                    .Where(skillLevel => skillLevel.Id.Equals(Guid.Empty))
+                    .ToList();
+                var skillLevelsToSoftDelete = dbItem.SkillLevels
+                    .Where(skillLevel => skillLevel.IsUsed)
+                    .ExceptBy(mappedSkillGroup.SkillLevels.Select(skillLevel => skillLevel.Id), skillLevel => skillLevel.Id)
+                    .ToList();
+                var skillLevelsToCheck = dbItem.SkillLevels
+                    .IntersectBy(mappedSkillGroup.SkillLevels.Select(skillLevel => skillLevel.Id), skillLevel => skillLevel.Id)
+                    .ToList();
 
-                foreach (var skillLevel in skillLevelsToCheck)
+                foreach (var srcSkillLevel in skillLevelsToCheck)
                 {
-                    var modifiedSkillLevel = mappedSkillGroup.SkillLevels
-                        .FirstOrDefault(i => i.Id.Equals(skillLevel.Id));
-                    if (!skillLevel.Equals(modifiedSkillLevel))
+                    var destSkillLevel = mappedSkillGroup.SkillLevels
+                        .FirstOrDefault(skillLevel => skillLevel.Id.Equals(srcSkillLevel.Id));
+
+                    if (srcSkillLevel.IsUsed)
                     {
-                        if (skillLevel.IsUsed)
+                        if (srcSkillLevel.Equals(destSkillLevel))
                         {
-                            usedSkillLevelsToUpdate.Add(modifiedSkillLevel);
+                            skillLevelsToCreate.Add(srcSkillLevel);
                         }
                         else
                         {
-                            unusedSkillLevelsToUpdate.Add(modifiedSkillLevel);
+                            skillLevelsToSoftDelete.Add(srcSkillLevel);
+                            destSkillLevel!.Id = Guid.Empty;
+                            skillLevelsToCreate.Add(destSkillLevel);
                         }
+                    }
+                    else
+                    {
+                        skillLevelsToCreate.Add(destSkillLevel);
                     }
                 }
 
-                await _skillLevelRepository.UpdateManyAsync(unusedSkillLevelsToUpdate);
-
-                var usedSkillLevelIdsToUpdate = usedSkillLevelsToUpdate
-                    .Select(i => i.Id)
-                    .ToList();
-
-                var skillLevelsIdsToHardDelete = skillLevelsToDelete
-                    .Where(i => !i.IsUsed)
-                    .Select(i => i.Id)
-                    .ToList();
-                await _skillLevelRepository.HardDeleteManyAsync(skillLevelsIdsToHardDelete);
-
-                var skillLevelIdsToSoftDelete = skillLevelsToDelete
-                    .Select(i => i.Id)
-                    .Except(skillLevelsIdsToHardDelete)
-                    .ToList();
-                skillLevelIdsToSoftDelete.AddRange(usedSkillLevelIdsToUpdate);
-                await _skillLevelRepository.SoftDeleteManyAsync(skillLevelIdsToSoftDelete);
-
-                usedSkillLevelsToUpdate.AddRange(skillLevelsToCreate);
-                _skillLevelRepository.CreateMany(usedSkillLevelsToUpdate);
-            }
-            else
-            {
-                _skillLevelRepository.CreateMany(skillLevelsToCreate);
-                var skillLevelsIdsToDelete = skillLevelsToDelete.Select(i => i.Id).ToList();
-                await _skillLevelRepository.HardDeleteManyAsync(skillLevelsIdsToDelete);
+                skillLevels.AddRange(skillLevelsToCreate);
+                skillLevelsToSoftDelete.ForEach(skillLevel => skillLevel.IsActive = false);
+                skillLevels.AddRange(skillLevelsToSoftDelete);
+                mappedSkillGroup.SkillLevels = skillLevels;
             }
 
             await _repository.UpdateAsync(mappedSkillGroup);
@@ -105,28 +87,16 @@ namespace SkillsGrading.BusinessLogic.Services
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
             }
 
-            var skillLevelIds = skillGroup.SkillLevels.Select(i => i.Id).ToList();
-
             if (skillGroup.IsUsed)
             {
                 await _repository.SoftDeleteAsync(id);
-                await _skillLevelRepository.SoftDeleteManyAsync(skillLevelIds);
             }
             else
             {
                 await _repository.HardDeleteAsync(id);
-                await _skillLevelRepository.HardDeleteManyAsync(skillLevelIds);
             }
 
             await _unitOfWork.SaveAsync();
-        }
-
-        public async Task<List<SkillLevelModel>> GetSkillLevelsAsync(Guid id)
-        {
-            var skillGroup = await GetByFilterAsync(new SkillGroupFilter { Id = id });
-            var skillLevels = skillGroup.SkillLevels;
-
-            return skillLevels;
         }
     }
 }
