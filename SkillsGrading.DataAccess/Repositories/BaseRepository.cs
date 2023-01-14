@@ -15,7 +15,7 @@ namespace SkillsGrading.DataAccess.Repositories
         IBaseRepository<TDbModel, TDataModel, TFilter>
         where TDbModel : BaseDbModel
         where TDataModel : BaseDataModel
-        where TFilter : BaseFilter
+        where TFilter : BaseFilter, new()
     {
         protected readonly GradingContext _gradingContext;
         protected readonly IPaginationHelper<TDbModel> _paginationHelper;
@@ -167,11 +167,13 @@ namespace SkillsGrading.DataAccess.Repositories
 
         private IQueryable<TDbModel> ConstructFilter(TFilter filter)
         {
-            var items = _gradingContext.Set<TDbModel>().AsNoTracking().Where(i => i.IsActive);
+            var items = _gradingContext.Set<TDbModel>().Where(i => i.IsActive);
 
-            if (filter == null)
+            filter ??= new TFilter();
+
+            if (!filter.IsTracking.HasValue || !filter.IsTracking.Value)
             {
-                return items;
+                items = items.AsNoTracking();
             }
 
             if (filter.Id.HasValue)
