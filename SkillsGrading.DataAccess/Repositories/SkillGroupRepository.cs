@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using SkillsGrading.Common.Constants;
 using SkillsGrading.Common.Helpers.Interfaces;
 using SkillsGrading.DataAccess.DataModels;
 using SkillsGrading.DataAccess.Filters;
@@ -17,6 +18,22 @@ namespace SkillsGrading.DataAccess.Repositories
             IPaginationHelper<SkillGroup> paginationHelper,
             IMapper mapper) : base(gradingContext, paginationHelper, mapper)
         {
+        }
+
+        public override async Task SoftDeleteAsync(Guid id)
+        {
+            var dbItem = await _gradingContext.SkillGroups
+                .Include(skillGroup => skillGroup.SkillLevels
+                    .Where(skillLevel => skillLevel.IsActive))
+                .FirstOrDefaultAsync(i => i.Id.Equals(id));
+
+            if (dbItem == null)
+            {
+                throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
+            }
+
+            dbItem.IsActive = false;
+            dbItem.SkillLevels.ForEach(skillLevel => skillLevel.IsActive = false);
         }
 
         protected override IQueryable<SkillGroup> AddFilterConditions(IQueryable<SkillGroup> items,
@@ -46,6 +63,12 @@ namespace SkillsGrading.DataAccess.Repositories
                 skillLevel.IsActive = true;
                 skillLevel.IsUsed = false;
             }
+        }
+
+        protected override void SaveImportantInfo(SkillGroup beforeSave, SkillGroupDataModel forSave)
+        {
+            base.SaveImportantInfo(beforeSave, forSave);
+            forSave.IsUsed = beforeSave.IsUsed;
         }
     }
 }
