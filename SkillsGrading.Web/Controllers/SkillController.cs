@@ -23,7 +23,7 @@ namespace SkillsGrading.Web.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAsync(PaginationRequest<SkillFilter> request)
+        public Task<IActionResult> GetAsync([FromQuery] PaginationRequest<SkillFilter> request)
         {
             return ProcessRequest<PaginationResponse<SkillModel>, PaginationResponse<SkillViewModel>>(() =>
                 _skillService.GetPaginatedAsync(request));
@@ -34,8 +34,7 @@ namespace SkillsGrading.Web.Controllers
         {
             var mappedItem = _mapper.Map<SkillModel>(item);
 
-            return ProcessRequest<SkillViewModel>(() =>
-                _skillService.CreateAsync(mappedItem));
+            return ProcessRequest<SkillViewModel>(() => _skillService.CreateAsync(mappedItem));
         }
 
         [HttpPut]
@@ -43,15 +42,13 @@ namespace SkillsGrading.Web.Controllers
         {
             var mappedItem = _mapper.Map<SkillModel>(item);
 
-            return ProcessRequest<SkillViewModel>(() =>
-                _skillService.UpdateAsync(mappedItem));
+            return ProcessRequest<SkillViewModel>(() => _skillService.UpdateAsync(mappedItem));
         }
 
         [HttpDelete]
         public Task<IActionResult> DeleteAsync(Guid id)
         {
-            return ProcessRequest<SkillViewModel>(() =>
-                _skillService.DeleteAsync(id));
+            return ProcessRequest<SkillViewModel>(() => _skillService.DeleteAsync(id));
         }
     }
 }

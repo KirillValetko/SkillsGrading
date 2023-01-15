@@ -12,8 +12,7 @@ namespace SkillsGrading.Web.Infrastructure
         {
             CreateMap<PaginationResponse<SkillModel>, PaginationResponse<SkillViewModel>>();
             CreateMap<SkillModel, SkillViewModel>();
-            CreateMap<SkillDto, SkillModel>().ForMember(dest => dest.GroupId, 
-                opt => opt.MapFrom(src => src.SkillGroup.Id));
+            CreateMap<SkillDto, SkillModel>();
             CreateMap<PaginationResponse<SkillGroupModel>, PaginationResponse<SkillGroupViewModel>>();
             CreateMap<SkillGroupModel, SkillGroupViewModel>();
             CreateMap<SkillGroupDto, SkillGroupModel>().AfterMap((dto, model) =>

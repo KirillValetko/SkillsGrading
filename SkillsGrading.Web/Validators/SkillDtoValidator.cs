@@ -8,7 +8,7 @@ namespace SkillsGrading.Web.Validators
         public SkillDtoValidator()
         {
             RuleFor(s => s.SkillName).NotEmpty();
-            RuleFor(s => s.SkillGroup).NotEmpty();
+            RuleFor(s => s.GroupId).NotEmpty();
         }
     }
 }
