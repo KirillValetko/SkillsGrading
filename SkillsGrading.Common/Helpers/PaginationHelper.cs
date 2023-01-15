@@ -21,7 +21,7 @@ namespace SkillsGrading.Common.Helpers
 
             var itemCount = await source.CountAsync();
             var pageCount = (int)Math.Ceiling((double)itemCount / limit.Value);
-            var paginatedItems = await source.Skip(pageCount*(pageNumber.Value - 1)).Take(pageCount).ToListAsync();
+            var paginatedItems = await source.Skip(limit.Value*(pageNumber.Value - 1)).Take(limit.Value).ToListAsync();
 
             var response = new PaginationResponse<T>
             {
