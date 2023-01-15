@@ -23,18 +23,23 @@ namespace SkillsGrading.DataAccess.Repositories
         {
             if (!string.IsNullOrEmpty(filter.SkillName))
             {
-                items = items.Where(i => i.SkillName.Contains(filter.SkillName));
+                items = items.Where(skill => skill.SkillName.Contains(filter.SkillName));
             }
 
-            items = items.Include(i => i.SkillGroup);
+            items = items.Include(skill => skill.SkillGroup)
+                .ThenInclude(skillGroup => skillGroup.SkillLevels
+                    .Where(skillLevel => skillLevel.IsActive)
+                    .OrderBy(skillLevel => skillLevel.LevelValue));
 
             return items;
         }
 
-        protected override void SaveImportantInfo(Skill beforeSave, Skill forSave)
+        protected override void SaveImportantInfo(Skill beforeSave, SkillDataModel forSave)
         {
             base.SaveImportantInfo(beforeSave, forSave);
+            forSave.IsUsed = beforeSave.IsUsed;
             forSave.SkillGroup.IsUsed = true;
+            _gradingContext.Entry(forSave.SkillGroup).State = EntityState.Modified;
         }
 
         protected override void PrepareForCreation(Skill item)
@@ -42,6 +47,7 @@ namespace SkillsGrading.DataAccess.Repositories
             base.PrepareForCreation(item);
             item.IsUsed = false;
             item.SkillGroup.IsUsed = true;
+            _gradingContext.Entry(item.SkillGroup).State = EntityState.Modified;
         }
     }
 }

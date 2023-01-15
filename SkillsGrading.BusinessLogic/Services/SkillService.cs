@@ -91,6 +91,8 @@ namespace SkillsGrading.BusinessLogic.Services
             {
                 await _repository.HardDeleteAsync(id);
             }
+
+            await _unitOfWork.SaveAsync();
         }
     }
 }
