@@ -39,7 +39,8 @@ namespace SkillsGrading.DataAccess.Repositories
             base.SaveImportantInfo(beforeSave, forSave);
             forSave.IsUsed = beforeSave.IsUsed;
             forSave.SkillGroup.IsUsed = true;
-            _gradingContext.Entry(forSave.SkillGroup).State = EntityState.Modified;
+            var mappedSkillGroup = _mapper.Map<SkillGroup>(forSave.SkillGroup);
+            _gradingContext.Entry(mappedSkillGroup).State = EntityState.Modified;
         }
 
         protected override void PrepareForCreation(Skill item)
