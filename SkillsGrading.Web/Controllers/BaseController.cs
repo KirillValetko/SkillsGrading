@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Npgsql;
 using SkillsGrading.Web.Responses;
 
 namespace SkillsGrading.Web.Controllers
@@ -35,6 +36,13 @@ namespace SkillsGrading.Web.Controllers
 
                 return BadRequest(new ApiResponse<TViewModel>(ex.Message));
             }
+            catch (NpgsqlException ex)
+            {
+                _logger.LogError(ex.Message);
+                Console.WriteLine(ex.Message);
+
+                return BadRequest(new ApiResponse<TViewModel>(ex.Message));
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
@@ -53,6 +61,13 @@ namespace SkillsGrading.Web.Controllers
                 return Ok(new ApiResponse<TViewModel>(default(TViewModel)));
             }
             catch (SqlException ex)
+            {
+                _logger.LogError(ex.Message);
+                Console.WriteLine(ex.Message);
+
+                return BadRequest(new ApiResponse<TViewModel>(ex.Message));
+            }
+            catch (NpgsqlException ex)
             {
                 _logger.LogError(ex.Message);
                 Console.WriteLine(ex.Message);

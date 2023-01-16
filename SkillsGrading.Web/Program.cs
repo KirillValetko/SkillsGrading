@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.InitDbContext(builder.Configuration);
+builder.Services.InitDbContext(builder.Configuration, builder.Environment);
 builder.Services.InitRepositories();
 builder.Services.InitServices();
 builder.Services.InitHelpers();
@@ -16,7 +16,7 @@ builder.Services.InitModelValidation();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
