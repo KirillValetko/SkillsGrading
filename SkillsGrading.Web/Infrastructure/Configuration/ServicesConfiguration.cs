@@ -8,6 +8,7 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
         public static void InitServices(this IServiceCollection services)
         {
             services.AddScoped<ISkillGroupService, SkillGroupService>();
+            services.AddScoped<ISkillService, SkillService>();
         }
     }
 }
