@@ -9,16 +9,30 @@ namespace SkillsGrading.BusinessLogic.Infrastructure
     {
         public BllMapperProfile()
         {
+            CreateMap<PaginationResponse<SpecialtyDataModel>, PaginationResponse<SpecialtyModel>>();
+            CreateMap<SpecialtyDataModel, SpecialtyModel>();
+            CreateMap<PaginationResponse<GradeLevelGroupDataModel>, PaginationResponse<GradeLevelGroupModel>>();
+            CreateMap<GradeLevelGroupDataModel, GradeLevelGroupModel>();
+            CreateMap<GradeLevelGroupModel, GradeLevelGroupDataModel>()
+                .AfterMap((model, dataModel) => 
+                    dataModel.IsActive = true);
+            CreateMap<PaginationResponse<GradeLevelDataModel>, PaginationResponse<GradeLevelModel>>();
+            CreateMap<GradeLevelDataModel, GradeLevelModel>();
+            CreateMap<GradeLevelModel, GradeLevelDataModel>()
+                .AfterMap((model, dataModel) => 
+                    dataModel.IsActive = true);
             CreateMap<PaginationResponse<SkillDataModel>, PaginationResponse<SkillModel>>();
             CreateMap<SkillDataModel, SkillModel>().ReverseMap();
             CreateMap<PaginationResponse<SkillGroupDataModel>, PaginationResponse<SkillGroupModel>>();
             CreateMap<SkillGroupDataModel, SkillGroupModel>();
-            CreateMap<SkillGroupModel, SkillGroupDataModel>().AfterMap((model, dataModel) =>
-                dataModel.IsActive = true);
+            CreateMap<SkillGroupModel, SkillGroupDataModel>()
+                .AfterMap((model, dataModel) =>
+                    dataModel.IsActive = true);
             CreateMap<PaginationResponse<SkillLevelDataModel>, PaginationResponse<SkillLevelModel>>();
             CreateMap<SkillLevelDataModel, SkillLevelModel>();
-            CreateMap<SkillLevelModel, SkillLevelDataModel>().AfterMap((model, dataModel) => 
-                dataModel.IsActive = true);
+            CreateMap<SkillLevelModel, SkillLevelDataModel>()
+                .AfterMap((model, dataModel) => 
+                    dataModel.IsActive = true);
         }
     }
 }
