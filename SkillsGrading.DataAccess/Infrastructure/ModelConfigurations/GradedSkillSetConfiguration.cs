@@ -19,7 +19,8 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
                 .HasForeignKey(gss => gss.GradeTemplateId);
             builder.HasOne(gss => gss.GradeLevel)
                 .WithMany(gl => gl.GradedSkillSets)
-                .HasForeignKey(gss => gss.GradeLevelId);
+                .HasForeignKey(gss => gss.GradeLevelId)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(gss => gss.Skill)
                 .WithMany(s => s.GradedSkillSets)
                 .HasForeignKey(gss => gss.SkillId)
