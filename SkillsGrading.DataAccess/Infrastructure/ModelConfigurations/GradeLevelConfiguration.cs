@@ -14,6 +14,7 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
             builder.Property(gl => gl.LevelValue).IsRequired();
             builder.Property(gl => gl.IsUsed).IsRequired();
             builder.Property(gl => gl.IsActive).IsRequired();
+            builder.Property(gl => gl.GroupId).IsRequired();
         }
     }
 }

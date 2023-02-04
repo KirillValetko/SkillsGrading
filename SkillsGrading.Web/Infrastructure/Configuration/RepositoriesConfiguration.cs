@@ -10,6 +10,9 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IGradeTemplateRepository, GradeTemplateRepository>();
             services.AddScoped<IGradedSkillSetRepository, GradedSkillSetRepository>();
+            services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
+            services.AddScoped<IGradeLevelGroupRepository, GradeLevelGroupRepository>();
+            services.AddScoped<IGradeLevelRepository, GradeLevelRepository>();
             services.AddScoped<ISkillRepository, SkillRepository>();
             services.AddScoped<ISkillGroupRepository, SkillGroupRepository>();
             services.AddScoped<ISkillLevelRepository, SkillLevelRepository>();

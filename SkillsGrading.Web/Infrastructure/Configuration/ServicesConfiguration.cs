@@ -8,6 +8,8 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
         public static void InitServices(this IServiceCollection services)
         {
             services.AddScoped<IGradeTemplateService, GradeTemplateService>();
+            services.AddScoped<ISpecialtyService, SpecialtyService>();
+            services.AddScoped<IGradeLevelGroupService, GradeLevelGroupService>();
             services.AddScoped<ISkillGroupService, SkillGroupService>();
             services.AddScoped<ISkillService, SkillService>();
         }

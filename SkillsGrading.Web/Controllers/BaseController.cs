@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using SkillsGrading.Common.Models;
 using SkillsGrading.Web.Responses;
 
 namespace SkillsGrading.Web.Controllers
@@ -63,6 +64,23 @@ namespace SkillsGrading.Web.Controllers
             {
                 _logger.LogError(ex.Message);
                 Console.WriteLine(ex.Message);
+
+                return BadRequest(new ApiResponse<TViewModel>(ex.Message));
+            }
+        }
+
+        protected IActionResult ProcessRequest<TViewModel>(Func<TViewModel> func)
+        {
+            try
+            {
+                var list = func();
+
+                return Ok(new ApiResponse<TViewModel>(list));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                Console.WriteLine(ex);
 
                 return BadRequest(new ApiResponse<TViewModel>(ex.Message));
             }

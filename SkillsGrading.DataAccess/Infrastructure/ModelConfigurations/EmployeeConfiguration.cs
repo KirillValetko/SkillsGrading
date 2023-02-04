@@ -12,9 +12,9 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
             builder.Property(e => e.AccountName).IsRequired();
             builder.Property(e => e.FullName).IsRequired();
             builder.Property(e => e.Department).IsRequired();
-            builder.Property(e => e.Position).IsRequired();
             builder.Property(e => e.IsActive).IsRequired();
             builder.Property(e => e.GraderId).IsRequired();
+            builder.Property(e => e.SpecialtyId).IsRequired();
             builder.HasOne(e => e.Grader)
                 .WithMany(e => e.Gradees)
                 .HasForeignKey(e => e.GraderId)
