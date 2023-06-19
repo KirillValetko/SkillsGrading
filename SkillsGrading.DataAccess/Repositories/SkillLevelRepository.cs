@@ -45,5 +45,16 @@ namespace SkillsGrading.DataAccess.Repositories
             base.PrepareForCreation(item);
             item.IsUsed = false;
         }
+
+        public void SetSkillLevelsUsed(List<SkillLevelDataModel> skillLevels)
+        {
+            skillLevels.ForEach(skillLevel => skillLevel.IsUsed = true);
+            var mappedSkillLevels = _mapper.Map<List<SkillLevel>>(skillLevels);
+
+            foreach (var skillLevel in mappedSkillLevels)
+            {
+                _gradingContext.Entry(skillLevel).State = EntityState.Modified;
+            }
+        }
     }
 }

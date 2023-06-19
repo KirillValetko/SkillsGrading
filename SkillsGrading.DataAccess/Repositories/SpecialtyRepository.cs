@@ -25,18 +25,23 @@ namespace SkillsGrading.DataAccess.Repositories
                 items = items.Where(specialty => specialty.SpecialtyName.Contains(filter.SpecialtyName));
             }
 
-            if (filter.IsFull.HasValue)
+            if (filter.HasGradeLevelGroup.HasValue)
             {
-                if (filter.IsFull.Value)
+                if (filter.HasGradeLevelGroup.Value)
                 {
                     items = items.Where(specialty =>
-                        specialty.GradeLevelGroups.Count(gradeLevel => gradeLevel.IsActive) == 3);
+                        specialty.GradeLevelGroups.Any(gradeLevelGroup => gradeLevelGroup.IsActive));
                 }
                 else
                 {
                     items = items.Where(specialty =>
-                        specialty.GradeLevelGroups.Count(gradeLevel => gradeLevel.IsActive) != 3);
+                        !specialty.GradeLevelGroups.Any(gradeLevelGroup => gradeLevelGroup.IsActive));
                 }
+            }
+
+            if (filter.IsUsed.HasValue && !filter.IsUsed.Value)
+            {
+                items = items.Where(specialty => !specialty.IsUsed);
             }
 
             return items;

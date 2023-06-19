@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SkillsGrading.Common.Constants;
 using SkillsGrading.Common.Helpers.Interfaces;
 using SkillsGrading.DataAccess.DataModels;
 using SkillsGrading.DataAccess.Filters;
@@ -18,11 +20,38 @@ namespace SkillsGrading.DataAccess.Repositories
         {
         }
 
+        public override async Task SoftDeleteAsync(Guid id)
+        {
+            var dbItem = await _gradingContext.GradeTemplates
+                .Include(gradeTemplate => gradeTemplate.GradedSkillSets
+                    .Where(gradedSkillSet => gradedSkillSet.IsActive))
+                .FirstOrDefaultAsync(i => i.Id.Equals(id));
+
+            if (dbItem == null)
+            {
+                throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
+            }
+
+            dbItem.IsActive = false;
+            dbItem.GradedSkillSets.ForEach(skillLevel => skillLevel.IsActive = false);
+        }
+
         protected override IQueryable<GradeTemplate> AddFilterConditions(IQueryable<GradeTemplate> items, GradeTemplateFilter filter)
         {
             if (!string.IsNullOrEmpty(filter.TemplateName))
             {
                 items = items.Where(gradeTemplate => gradeTemplate.TemplateName.Contains(filter.TemplateName));
+            }
+
+            if (filter.IncludeGradedSkillSets.HasValue && filter.IncludeGradedSkillSets.Value)
+            {
+                items = items.Include(gradeTemplate => gradeTemplate.GradedSkillSets
+                    .Where(gradedSkillSet => gradedSkillSet.IsActive));
+            }
+
+            if (filter.SpecialtyId.HasValue)
+            {
+                items = items.Where(gradeTemplate => gradeTemplate.SpecialtyId.Equals(filter.SpecialtyId));
             }
 
             return items;
@@ -32,6 +61,21 @@ namespace SkillsGrading.DataAccess.Repositories
         {
             base.PrepareForCreation(item);
             item.IsUsed = false;
+
+            foreach (var gradedSkillSet in item.GradedSkillSets)
+            {
+                gradedSkillSet.Id = Guid.NewGuid();
+                gradedSkillSet.IsActive = true;
+            }
+
+            item.Specialty.IsUsed = true;
+            _gradingContext.Entry(item.Specialty).State = EntityState.Modified;
+        }
+
+        protected override void SaveImportantInfo(GradeTemplate beforeSave, GradeTemplateDataModel forSave)
+        {
+            base.SaveImportantInfo(beforeSave, forSave);
+            forSave.IsUsed = beforeSave.IsUsed;
         }
     }
 }

@@ -167,13 +167,18 @@ namespace SkillsGrading.DataAccess.Repositories
 
         private IQueryable<TDbModel> ConstructFilter(TFilter filter)
         {
-            var items = _gradingContext.Set<TDbModel>().Where(i => i.IsActive);
+            var items = _gradingContext.Set<TDbModel>().AsQueryable();
 
             filter ??= new TFilter();
 
             if (!filter.IsTracking.HasValue || !filter.IsTracking.Value)
             {
                 items = items.AsNoTracking();
+            }
+
+            if (!filter.OnlyActive.HasValue || filter.OnlyActive.Value)
+            {
+                items = items.Where(i => i.IsActive);
             }
 
             if (filter.Id.HasValue)

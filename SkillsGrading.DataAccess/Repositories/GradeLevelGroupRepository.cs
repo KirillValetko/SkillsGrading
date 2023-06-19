@@ -43,11 +43,6 @@ namespace SkillsGrading.DataAccess.Repositories
                 items = items.Where(gradeLevelGroup => gradeLevelGroup.GroupName.Contains(filter.GroupName));
             }
 
-            if (filter.GroupValue.HasValue)
-            {
-                items = items.Where(gradeLevelGroup => gradeLevelGroup.GroupValue == filter.GroupValue.Value);
-            }
-
             if (filter.SpecialtyId.HasValue)
             {
                 items = items.Where(gradeLevelGroup => gradeLevelGroup.SpecialtyId.Equals(filter.SpecialtyId.Value));
@@ -57,8 +52,7 @@ namespace SkillsGrading.DataAccess.Repositories
                 .Include(gradeLevelGroup => gradeLevelGroup.GradeLevels
                     .Where(gradeLevel => gradeLevel.IsActive)
                     .OrderBy(gradeLevel => gradeLevel.LevelValue))
-                .OrderBy(gradeLevelGroup => gradeLevelGroup.SpecialtyId)
-                .ThenBy(gradeLevelGroup => gradeLevelGroup.GroupValue);
+                .OrderBy(gradeLevelGroup => gradeLevelGroup.SpecialtyId);
 
             return items;
         }
@@ -66,7 +60,6 @@ namespace SkillsGrading.DataAccess.Repositories
         protected override void PrepareForCreation(GradeLevelGroup item)
         {
             base.PrepareForCreation(item);
-            item.IsUsed = false;
 
             foreach (var gradeLevel in item.GradeLevels)
             {
@@ -74,13 +67,6 @@ namespace SkillsGrading.DataAccess.Repositories
                 gradeLevel.IsActive = true;
                 gradeLevel.IsUsed = false;
             }
-        }
-
-        protected override void SaveImportantInfo(GradeLevelGroup beforeSave, GradeLevelGroupDataModel forSave)
-        {
-            base.SaveImportantInfo(beforeSave, forSave);
-            forSave.IsUsed = beforeSave.IsUsed;
-            forSave.GroupValue = beforeSave.GroupValue;
         }
     }
 }

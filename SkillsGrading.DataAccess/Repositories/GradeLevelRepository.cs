@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SkillsGrading.Common.Helpers.Interfaces;
 using SkillsGrading.DataAccess.DataModels;
 using SkillsGrading.DataAccess.Filters;
@@ -48,6 +49,17 @@ namespace SkillsGrading.DataAccess.Repositories
             items = items.OrderBy(gradeLevel => gradeLevel.LevelValue);
 
             return items;
+        }
+
+        public void SetGradeLevelsUsed(List<GradeLevelDataModel> gradeLevels)
+        {
+            gradeLevels.ForEach(gradeLevel => gradeLevel.IsUsed = true);
+            var mappedGradeLevels = _mapper.Map<List<GradeLevel>>(gradeLevels);
+
+            foreach (var gradeLevel in mappedGradeLevels)
+            {
+                _gradingContext.Entry(gradeLevel).State = EntityState.Modified;
+            }
         }
     }
 }
