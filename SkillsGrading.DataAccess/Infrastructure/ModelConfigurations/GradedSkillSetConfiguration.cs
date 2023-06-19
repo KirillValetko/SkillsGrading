@@ -14,6 +14,7 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
             builder.Property(gss => gss.GradeTemplateId).IsRequired();
             builder.Property(gss => gss.GradeLevelId).IsRequired();
             builder.Property(gss => gss.SkillId).IsRequired();
+            builder.Property(gss => gss.SkillLevelId).IsRequired();
             builder.HasOne(gss => gss.GradeTemplate)
                 .WithMany(gt => gt.GradedSkillSets)
                 .HasForeignKey(gss => gss.GradeTemplateId);
@@ -27,7 +28,7 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
                 .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(gss => gss.SkillLevel)
                 .WithMany(sl => sl.GradedSkillSets)
-                .HasForeignKey(gss => gss.GradeTemplateId)
+                .HasForeignKey(gss => gss.SkillLevelId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

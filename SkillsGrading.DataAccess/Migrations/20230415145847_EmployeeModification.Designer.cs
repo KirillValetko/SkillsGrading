@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkillsGrading.DataAccess.Infrastructure;
 
@@ -11,9 +12,11 @@ using SkillsGrading.DataAccess.Infrastructure;
 namespace SkillsGrading.DataAccess.Migrations
 {
     [DbContext(typeof(GradingContext))]
-    partial class GradingContextModelSnapshot : ModelSnapshot
+    [Migration("20230415145847_EmployeeModification")]
+    partial class EmployeeModification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +34,10 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.Property<string>("AccountName")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -141,7 +148,13 @@ namespace SkillsGrading.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("GroupValue")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("SpecialtyId")

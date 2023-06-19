@@ -10,8 +10,6 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
         {
             builder.HasKey(glg => glg.Id);
             builder.Property(glg => glg.GroupName).IsRequired();
-            builder.Property(glg => glg.GroupValue).IsRequired();
-            builder.Property(glg => glg.IsUsed).IsRequired();
             builder.Property(glg => glg.IsActive).IsRequired();
             builder.Property(glg => glg.SpecialtyId).IsRequired();
             builder.HasMany(glg => glg.GradeLevels)
