@@ -32,14 +32,6 @@ namespace SkillsGrading.BusinessLogic.Services
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
             }
 
-            var gradeLevelGroup = await _repository.GetByFilterAsync(new GradeLevelGroupFilter
-                { GroupValue = item.GroupValue, SpecialtyId = item.SpecialtyId });
-
-            if (gradeLevelGroup != null)
-            {
-                throw new Exception(ExceptionMessageConstants.EqualGroupValue);
-            }
-
             var mappedItem = _mapper.Map<GradeLevelGroupDataModel>(item);
             _repository.Create(mappedItem);
             await _unitOfWork.SaveAsync();
@@ -60,14 +52,11 @@ namespace SkillsGrading.BusinessLogic.Services
                 throw new Exception(ExceptionMessageConstants.DifferentSpecialties);
             }
 
-            if (dbItem.GroupValue != item.GroupValue)
-            {
-                throw new Exception(ExceptionMessageConstants.DifferentGroupValues);
-            }
-
             var mappedGradeLevelGroup = _mapper.Map<GradeLevelGroupDataModel>(item);
+            var isUsed = dbItem.GradeLevels
+                .Any(gradeLevel => gradeLevel.IsUsed);
 
-            if (dbItem.IsUsed)
+            if (isUsed)
             {
                 var gradeLevels = new List<GradeLevelDataModel>();
                 var gradeLevelsToCreate = mappedGradeLevelGroup.GradeLevels
@@ -124,7 +113,10 @@ namespace SkillsGrading.BusinessLogic.Services
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
             }
 
-            if (gradeLevelGroup.IsUsed)
+            var isUsed = gradeLevelGroup.GradeLevels
+                .Any(gradeLevel => gradeLevel.IsUsed);
+
+            if (isUsed)
             {
                 await _repository.SoftDeleteAsync(id);
             }

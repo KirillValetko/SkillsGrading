@@ -5,7 +5,7 @@ using SkillsGrading.DataAccess.Models;
 
 namespace SkillsGrading.BusinessLogic.Services.Interfaces
 {
-    public interface IGradeTemplateService : IBaseService<GradeTemplate, GradeTemplateDataModel, GradeTemplateModel, GradeTemplateFilter>
+    public interface IGradeLevelService : IBaseService<GradeLevel, GradeLevelDataModel, GradeLevelModel, GradeLevelFilter>
     {
     }
 }
