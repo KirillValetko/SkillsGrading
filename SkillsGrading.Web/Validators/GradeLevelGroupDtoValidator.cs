@@ -8,7 +8,6 @@ namespace SkillsGrading.Web.Validators
         public GradeLevelGroupDtoValidator()
         {
             RuleFor(glg => glg.GroupName).NotEmpty();
-            RuleFor(glg => glg.GroupValue).GreaterThanOrEqualTo(0).NotNull();
             RuleFor(glg => glg.SpecialtyId).NotEmpty();
             RuleFor(glg => glg.GradeLevels).NotEmpty();
         }
