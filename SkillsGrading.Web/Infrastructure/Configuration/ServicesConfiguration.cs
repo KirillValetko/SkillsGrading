@@ -10,6 +10,7 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
             services.AddScoped<IGradeTemplateService, GradeTemplateService>();
             services.AddScoped<ISpecialtyService, SpecialtyService>();
             services.AddScoped<IGradeLevelGroupService, GradeLevelGroupService>();
+            services.AddScoped<IGradeLevelService, GradeLevelService>();
             services.AddScoped<ISkillGroupService, SkillGroupService>();
             services.AddScoped<ISkillService, SkillService>();
         }

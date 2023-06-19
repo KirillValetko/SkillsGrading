@@ -14,7 +14,7 @@ namespace SkillsGrading.DataAccess.Infrastructure
             CreateMap<PaginationResponse<GradedSkillSet>, PaginationResponse<GradedSkillSetDataModel>>();
             CreateMap<GradedSkillSet, GradedSkillSetDataModel>().ReverseMap();
             CreateMap<PaginationResponse<Specialty>, PaginationResponse<SpecialtyDataModel>>();
-            CreateMap<Specialty, SpecialtyDataModel>();
+            CreateMap<Specialty, SpecialtyDataModel>().ReverseMap();
             CreateMap<PaginationResponse<GradeLevelGroup>, PaginationResponse<GradeLevelGroupDataModel>>();
             CreateMap<GradeLevelGroup, GradeLevelGroupDataModel>().ReverseMap();
             CreateMap<PaginationResponse<GradeLevel>, PaginationResponse<GradeLevelDataModel>>();

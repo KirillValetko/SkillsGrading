@@ -4,8 +4,8 @@
     {
         public string AccountName { get; set; }
         public string FullName { get; set; }
-        public string Department { get; set; }
-        public string Position { get; set; }
+        public int Role { get; set; }
+        public string Password { get; set; }
         public Guid GraderId { get; set; }
         public Guid SpecialtyId { get; set; }
 

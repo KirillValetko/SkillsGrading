@@ -11,9 +11,11 @@ namespace SkillsGrading.BusinessLogic.Infrastructure
         {
             CreateMap<PaginationResponse<GradeTemplateDataModel>, PaginationResponse<GradeTemplateModel>>();
             CreateMap<GradeTemplateDataModel, GradeTemplateModel>().ReverseMap();
+            CreateMap<PaginationResponse<GradedSkillSetDataModel>, PaginationResponse<GradedSkillSetModel>>();
             CreateMap<GradedSkillSetDataModel, GradedSkillSetModel>();
-            CreateMap<GradedSkillSetModel, GradedSkillSetDataModel>().AfterMap((model, dataModel) => 
-                dataModel.IsActive = true);
+            CreateMap<GradedSkillSetModel, GradedSkillSetDataModel>()
+                .AfterMap((model, dataModel) => 
+                    dataModel.IsActive = true);
             CreateMap<PaginationResponse<SpecialtyDataModel>, PaginationResponse<SpecialtyModel>>();
             CreateMap<SpecialtyDataModel, SpecialtyModel>();
             CreateMap<PaginationResponse<GradeLevelGroupDataModel>, PaginationResponse<GradeLevelGroupModel>>();

@@ -5,7 +5,7 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
 {
     public static class GradingContextConfiguration
     {
-        private const string ConnectionString = "GradingDb";
+        private const string ConnectionString = "GradingDB";
         public static void InitDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<GradingContext>(opt =>

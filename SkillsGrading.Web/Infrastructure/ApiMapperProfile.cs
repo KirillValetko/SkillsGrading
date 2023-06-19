@@ -10,17 +10,21 @@ namespace SkillsGrading.Web.Infrastructure
     {
         public ApiMapperProfile()
         {
+            CreateMap<PaginationResponse<GradeTemplateModel>, PaginationResponse<GradeTemplateViewModel>>();
+            CreateMap<GradeTemplateDto, GradeTemplateModel>()
+                .AfterMap((dto, model) =>
+                    model.GradedSkillSets.ForEach(gradedSkillSet => gradedSkillSet.GradeTemplateId = dto.Id));
+            CreateMap<GradeTemplateModel, GradeTemplateViewModel>();
+            CreateMap<PaginationResponse<GradedSkillSetModel>, PaginationResponse<GradedSkillSetViewModel>>();
+            CreateMap<GradedSkillSetDto, GradedSkillSetModel>();
+            CreateMap<GradedSkillSetModel, GradedSkillSetViewModel>();
             CreateMap<PaginationResponse<SpecialtyModel>, PaginationResponse<SpecialtyViewModel>>();
             CreateMap<SpecialtyModel, SpecialtyViewModel>();
             CreateMap<PaginationResponse<GradeLevelGroupModel>, PaginationResponse<GradeLevelGroupViewModel>>();
             CreateMap<GradeLevelGroupDto, GradeLevelGroupModel>()
                 .AfterMap((dto, model) => 
-                    model.GradeLevels.ForEach(gradeLevel => gradeLevel.GroupId = dto.Id))
-                .AfterMap((dto, model) => 
-                    model.GradeLevels.ForEach(gradeLevel => gradeLevel.LevelValue += dto.GroupValue * 100));
-            CreateMap<GradeLevelGroupModel, GradeLevelGroupViewModel>()
-                .AfterMap((model, viewModel) => 
-                    viewModel.GradeLevels.ForEach(gradeLevel => gradeLevel.LevelValue -= model.GroupValue * 100));
+                    model.GradeLevels.ForEach(gradeLevel => gradeLevel.GroupId = dto.Id));
+            CreateMap<GradeLevelGroupModel, GradeLevelGroupViewModel>();
             CreateMap<PaginationResponse<GradeLevelModel>, PaginationResponse<GradeLevelViewModel>>();
             CreateMap<GradeLevelDto, GradeLevelModel>();
             CreateMap<GradeLevelModel, GradeLevelViewModel>();

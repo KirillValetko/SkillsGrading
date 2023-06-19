@@ -1,7 +1,6 @@
 ﻿using SkillsGrading.Common.Helpers;
 using SkillsGrading.Common.Helpers.Interfaces;
 using SkillsGrading.DataAccess.Models;
-using SkillsGrading.Web.Enums;
 
 namespace SkillsGrading.Web.Infrastructure.Configuration
 {
@@ -17,7 +16,6 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
             services.AddScoped<IPaginationHelper<Skill>, PaginationHelper<Skill>>();
             services.AddScoped<IPaginationHelper<SkillGroup>, PaginationHelper<SkillGroup>>();
             services.AddScoped<IPaginationHelper<SkillLevel>, PaginationHelper<SkillLevel>>();
-            services.AddScoped<IEnumHelper<GradeLevelGroupValues>, EnumHelper<GradeLevelGroupValues>>();
         }
     }
 }
