@@ -19,6 +19,12 @@ namespace SkillsGrading.BusinessLogic.Services
         {
         }
 
+        public override async Task CreateAsync(SkillGroupModel item)
+        {
+            item.SkillLevels.Add(new SkillLevelModel { LevelName = "", Description = "", LevelValue = 0 });
+            await base.CreateAsync(item);
+        }
+
         public override async Task UpdateAsync(SkillGroupModel item)
         {
             var dbItem = await _repository.GetByFilterAsync(new SkillGroupFilter { Id = item.Id, IsTracking = true });

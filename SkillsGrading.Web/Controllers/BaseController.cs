@@ -7,7 +7,7 @@ namespace SkillsGrading.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseController : ControllerBase
+    public abstract class BaseController : ControllerBase
     {
         protected readonly IMapper _mapper;
         protected readonly ILogger<BaseController> _logger;

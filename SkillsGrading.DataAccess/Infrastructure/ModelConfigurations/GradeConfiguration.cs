@@ -18,10 +18,12 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
                 .HasForeignKey(g => g.GradeTemplateId);
             builder.HasOne(g => g.GradeLevel)
                 .WithMany(gl => gl.Grades)
-                .HasForeignKey(g => g.NewGradeLevelId);
+                .HasForeignKey(g => g.NewGradeLevelId)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(g => g.Employee)
                 .WithMany(e => e.Grades)
-                .HasForeignKey(g => g.EmployeeId);
+                .HasForeignKey(g => g.EmployeeId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -30,11 +30,7 @@ namespace SkillsGrading.DataAccess.Migrations
 
                     b.Property<string>("AccountName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -46,13 +42,24 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Position")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("SpecialtyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountName")
+                        .IsUnique();
+
                     b.HasIndex("GraderId");
+
+                    b.HasIndex("SpecialtyId");
 
                     b.ToTable("Employees");
                 });
@@ -98,6 +105,9 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.Property<int>("GradeRevisionInMonths")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -116,7 +126,32 @@ namespace SkillsGrading.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.ToTable("GradeLevels");
+                });
+
+            modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradeLevelGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("SpecialtyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpecialtyId");
+
+                    b.ToTable("GradeLevelGroups");
                 });
 
             modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradeTemplate", b =>
@@ -131,11 +166,16 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("SpecialtyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TemplateName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SpecialtyId");
 
                     b.ToTable("GradeTemplates");
                 });
@@ -174,6 +214,8 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.HasIndex("GradeTemplateId");
 
                     b.HasIndex("SkillId");
+
+                    b.HasIndex("SkillLevelId");
 
                     b.ToTable("GradedSkillSets");
                 });
@@ -258,6 +300,27 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.ToTable("SkillLevels");
                 });
 
+            modelBuilder.Entity("SkillsGrading.DataAccess.Models.Specialty", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SpecialtyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Specialties");
+                });
+
             modelBuilder.Entity("SkillsGrading.DataAccess.Models.Employee", b =>
                 {
                     b.HasOne("SkillsGrading.DataAccess.Models.Employee", "Grader")
@@ -266,7 +329,15 @@ namespace SkillsGrading.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("SkillsGrading.DataAccess.Models.Specialty", "Specialty")
+                        .WithMany("Employees")
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Grader");
+
+                    b.Navigation("Specialty");
                 });
 
             modelBuilder.Entity("SkillsGrading.DataAccess.Models.Grade", b =>
@@ -274,7 +345,7 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.HasOne("SkillsGrading.DataAccess.Models.Employee", "Employee")
                         .WithMany("Grades")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SkillsGrading.DataAccess.Models.GradeTemplate", "GradeTemplate")
@@ -286,7 +357,7 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.HasOne("SkillsGrading.DataAccess.Models.GradeLevel", "GradeLevel")
                         .WithMany("Grades")
                         .HasForeignKey("NewGradeLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Employee");
@@ -296,12 +367,45 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.Navigation("GradeTemplate");
                 });
 
+            modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradeLevel", b =>
+                {
+                    b.HasOne("SkillsGrading.DataAccess.Models.GradeLevelGroup", "GradeLevelGroup")
+                        .WithMany("GradeLevels")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GradeLevelGroup");
+                });
+
+            modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradeLevelGroup", b =>
+                {
+                    b.HasOne("SkillsGrading.DataAccess.Models.Specialty", "Specialty")
+                        .WithMany("GradeLevelGroups")
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Specialty");
+                });
+
+            modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradeTemplate", b =>
+                {
+                    b.HasOne("SkillsGrading.DataAccess.Models.Specialty", "Specialty")
+                        .WithMany("GradeTemplates")
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Specialty");
+                });
+
             modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradedSkillSet", b =>
                 {
                     b.HasOne("SkillsGrading.DataAccess.Models.GradeLevel", "GradeLevel")
                         .WithMany("GradedSkillSets")
                         .HasForeignKey("GradeLevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("SkillsGrading.DataAccess.Models.GradeTemplate", "GradeTemplate")
@@ -310,15 +414,15 @@ namespace SkillsGrading.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SkillsGrading.DataAccess.Models.SkillLevel", "SkillLevel")
-                        .WithMany("GradedSkillSets")
-                        .HasForeignKey("GradeTemplateId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("SkillsGrading.DataAccess.Models.Skill", "Skill")
                         .WithMany("GradedSkillSets")
                         .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SkillsGrading.DataAccess.Models.SkillLevel", "SkillLevel")
+                        .WithMany("GradedSkillSets")
+                        .HasForeignKey("SkillLevelId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -367,6 +471,11 @@ namespace SkillsGrading.DataAccess.Migrations
                     b.Navigation("Grades");
                 });
 
+            modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradeLevelGroup", b =>
+                {
+                    b.Navigation("GradeLevels");
+                });
+
             modelBuilder.Entity("SkillsGrading.DataAccess.Models.GradeTemplate", b =>
                 {
                     b.Navigation("GradedSkillSets");
@@ -389,6 +498,15 @@ namespace SkillsGrading.DataAccess.Migrations
             modelBuilder.Entity("SkillsGrading.DataAccess.Models.SkillLevel", b =>
                 {
                     b.Navigation("GradedSkillSets");
+                });
+
+            modelBuilder.Entity("SkillsGrading.DataAccess.Models.Specialty", b =>
+                {
+                    b.Navigation("Employees");
+
+                    b.Navigation("GradeLevelGroups");
+
+                    b.Navigation("GradeTemplates");
                 });
 #pragma warning restore 612, 618
         }

@@ -46,7 +46,7 @@ namespace SkillsGrading.DataAccess.Repositories
 
             items = items.Include(group => 
                 group.SkillLevels
-                .Where(skillLevel => skillLevel.IsActive)
+                .Where(skillLevel => skillLevel.IsActive && skillLevel.LevelValue != 0)
                 .OrderBy(skillLevel => skillLevel.LevelValue));
 
             return items;
