@@ -8,10 +8,9 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
         public static void InitRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IGradeTemplateRepository, GradeTemplateRepository>();
             services.AddScoped<IGradedSkillSetRepository, GradedSkillSetRepository>();
-            services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
-            services.AddScoped<IGradeLevelGroupRepository, GradeLevelGroupRepository>();
             services.AddScoped<IGradeLevelRepository, GradeLevelRepository>();
             services.AddScoped<ISkillRepository, SkillRepository>();
             services.AddScoped<ISkillGroupRepository, SkillGroupRepository>();

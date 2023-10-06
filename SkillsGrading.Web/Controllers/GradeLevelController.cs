@@ -21,10 +21,10 @@ namespace SkillsGrading.Web.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAsync(Guid specialtyId)
+        public Task<IActionResult> GetAsync()
         {
             return ProcessRequest<List<GradeLevelModel>, List<GradeLevelViewModel>>(() =>
-                _gradeLevelService.GetAllByFilterAsync(new GradeLevelFilter { SpecialtyId = specialtyId }));
+                _gradeLevelService.GetAllByFilterAsync(new GradeLevelFilter { OnlyActive = true }));
         }
     }
 }

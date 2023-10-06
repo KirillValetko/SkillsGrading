@@ -15,16 +15,12 @@ namespace SkillsGrading.BusinessLogic.Services
     {
         private readonly IGradedSkillSetRepository _gradedSkillSetRepository;
         private readonly IGradeLevelRepository _gradeLevelRepository;
-        private readonly IGradeLevelGroupRepository _gradeLevelGroupRepository;
-        private readonly ISpecialtyRepository _specialtyRepository;
         private readonly ISkillRepository _skillRepository;
         private readonly ISkillLevelRepository _skillLevelRepository;
 
         public GradeTemplateService(IGradeTemplateRepository repository,
             IGradedSkillSetRepository gradedSkillSetRepository,
             IGradeLevelRepository gradeLevelRepository,
-            IGradeLevelGroupRepository gradeLevelGroupRepository,
-            ISpecialtyRepository specialtyRepository,
             ISkillRepository skillRepository,
             ISkillLevelRepository skillLevelRepository,
             IUnitOfWork unitOfWork,
@@ -32,8 +28,6 @@ namespace SkillsGrading.BusinessLogic.Services
         {
             _gradedSkillSetRepository = gradedSkillSetRepository;
             _gradeLevelRepository = gradeLevelRepository;
-            _gradeLevelGroupRepository = gradeLevelGroupRepository;
-            _specialtyRepository = specialtyRepository;
             _skillRepository = skillRepository;
             _skillLevelRepository = skillLevelRepository;
         }
@@ -47,8 +41,8 @@ namespace SkillsGrading.BusinessLogic.Services
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
             }
 
-            var gradedSkillSets = await _gradedSkillSetRepository.GetAllByFilterAsync(new GradedSkillSetFilter
-                { GradeTemplateId = filter.Id });
+            var gradedSkillSets = await _gradedSkillSetRepository.GetAllByFilterAsync(
+                new GradedSkillSetFilter { GradeTemplateId = filter.Id });
             gradeTemplate.GradedSkillSets = gradedSkillSets;
             var mappedGradeTemplate = _mapper.Map<GradeTemplateModel>(gradeTemplate);
 
@@ -57,22 +51,6 @@ namespace SkillsGrading.BusinessLogic.Services
 
         public override async Task CreateAsync(GradeTemplateModel item)
         {
-            var specialty = await _specialtyRepository.GetByFilterAsync(
-                new SpecialtyFilter { Id = item.SpecialtyId });
-
-            if (specialty == null)
-            {
-                throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
-            }
-
-            var gradeTemplate = await _repository.GetByFilterAsync(
-                new GradeTemplateFilter { SpecialtyId = item.SpecialtyId, IncludeGradedSkillSets = false });
-
-            if (gradeTemplate != null)
-            {
-                throw new Exception(ExceptionMessageConstants.EqualSpecialty);
-            }
-
             var templateGradeLevelsIds = item.GradedSkillSets
                 .Select(gradedSkillSet => gradedSkillSet.GradeLevelId)
                 .Distinct()
@@ -86,11 +64,7 @@ namespace SkillsGrading.BusinessLogic.Services
                 throw new Exception(ExceptionMessageConstants.IdenticalGradeLevels);
             }
 
-            var dbGradeLevelGroups = await _gradeLevelGroupRepository.GetAllByFilterAsync(
-                new GradeLevelGroupFilter { SpecialtyId = item.SpecialtyId });
-            var dbGradeLevels = dbGradeLevelGroups
-                .SelectMany(gradeLevelGroup => gradeLevelGroup.GradeLevels.Where(gradeLevel => templateGradeLevelsIds.Contains(gradeLevel.Id)))
-                .ToList();
+            var dbGradeLevels = await _gradeLevelRepository.GetAllByFilterAsync(new GradeLevelFilter());
 
             if (templateGradeLevelsIds.Count != dbGradeLevels.Count)
             {
@@ -123,7 +97,7 @@ namespace SkillsGrading.BusinessLogic.Services
                 .Distinct()
                 .ToList();
             var dbSkillLevels = await _skillLevelRepository.GetAllByFilterAsync(
-                new SkillLevelFilter{Ids = templateSkillLevelsIds});
+                new SkillLevelFilter { Ids = templateSkillLevelsIds });
 
             if (templateSkillLevelsIds.Count != dbSkillLevels.Count)
             {
@@ -131,7 +105,6 @@ namespace SkillsGrading.BusinessLogic.Services
             }
 
             var mappedItem = _mapper.Map<GradeTemplateDataModel>(item);
-            mappedItem.Specialty = specialty;
             _repository.Create(mappedItem);
             _gradeLevelRepository.SetGradeLevelsUsed(dbGradeLevels);
             _skillRepository.SetSkillsUsed(dbSkills);
@@ -147,11 +120,6 @@ namespace SkillsGrading.BusinessLogic.Services
             if (dbItem == null)
             {
                 throw new Exception(ExceptionMessageConstants.EntityIsNotFound);
-            }
-
-            if (dbItem.SpecialtyId != item.SpecialtyId)
-            {
-                throw new Exception(ExceptionMessageConstants.DifferentSpecialties);
             }
 
             var templateGradedSkillSetsIds = item.GradedSkillSets
@@ -206,7 +174,7 @@ namespace SkillsGrading.BusinessLogic.Services
             if (newTemplateGradeLevelsIds.Count != 0)
             {
                 var newDbGradeLevels = await _gradeLevelRepository.GetAllByFilterAsync(
-                    new GradeLevelFilter { Ids = newTemplateGradeLevelsIds, SpecialtyId = dbItem.SpecialtyId });
+                    new GradeLevelFilter { Ids = newTemplateGradeLevelsIds });
 
                 if (newTemplateGradeLevelsIds.Count != newDbGradeLevels.Count)
                 {

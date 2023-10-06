@@ -4,6 +4,5 @@
     {
         public string TemplateName { get; set; }
         public bool? IncludeGradedSkillSets { get; set; }
-        public Guid? SpecialtyId { get; set; }
     }
 }

@@ -9,18 +9,14 @@ namespace SkillsGrading.BusinessLogic.Infrastructure
     {
         public BllMapperProfile()
         {
+            CreateMap<PaginationResponse<EmployeeDataModel>, PaginationResponse<EmployeeModel>>();
+            CreateMap<EmployeeDataModel, EmployeeModel>().ReverseMap();
+            CreateMap<GradeDataModel, GradeModel>().ReverseMap();
             CreateMap<PaginationResponse<GradeTemplateDataModel>, PaginationResponse<GradeTemplateModel>>();
             CreateMap<GradeTemplateDataModel, GradeTemplateModel>().ReverseMap();
             CreateMap<PaginationResponse<GradedSkillSetDataModel>, PaginationResponse<GradedSkillSetModel>>();
             CreateMap<GradedSkillSetDataModel, GradedSkillSetModel>();
             CreateMap<GradedSkillSetModel, GradedSkillSetDataModel>()
-                .AfterMap((model, dataModel) => 
-                    dataModel.IsActive = true);
-            CreateMap<PaginationResponse<SpecialtyDataModel>, PaginationResponse<SpecialtyModel>>();
-            CreateMap<SpecialtyDataModel, SpecialtyModel>();
-            CreateMap<PaginationResponse<GradeLevelGroupDataModel>, PaginationResponse<GradeLevelGroupModel>>();
-            CreateMap<GradeLevelGroupDataModel, GradeLevelGroupModel>();
-            CreateMap<GradeLevelGroupModel, GradeLevelGroupDataModel>()
                 .AfterMap((model, dataModel) => 
                     dataModel.IsActive = true);
             CreateMap<PaginationResponse<GradeLevelDataModel>, PaginationResponse<GradeLevelModel>>();

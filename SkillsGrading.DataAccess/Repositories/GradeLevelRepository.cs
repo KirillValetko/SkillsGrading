@@ -21,31 +21,6 @@ namespace SkillsGrading.DataAccess.Repositories
 
         protected override IQueryable<GradeLevel> AddFilterConditions(IQueryable<GradeLevel> items, GradeLevelFilter filter)
         {
-            if (!string.IsNullOrEmpty(filter.LevelName))
-            {
-                items = items.Where(gradeLevel => gradeLevel.LevelName.Contains(filter.LevelName));
-            }
-
-            if (filter.LevelValue.HasValue)
-            {
-                items = items.Where(gradeLevel => gradeLevel.LevelValue > filter.LevelValue.Value);
-            }
-
-            if (filter.Salary.HasValue)
-            {
-                items = items.Where(gradeLevel => gradeLevel.Salary > filter.Salary.Value);
-            }
-
-            if (filter.GradeRevisionInMonths.HasValue)
-            {
-                items = items.Where(gradeLevel => gradeLevel.GradeRevisionInMonths > filter.GradeRevisionInMonths.Value);
-            }
-
-            if (filter.SpecialtyId.HasValue)
-            {
-                items = items.Where(gradeLevel => gradeLevel.GradeLevelGroup.SpecialtyId.Equals(filter.SpecialtyId.Value));
-            }
-
             items = items.OrderBy(gradeLevel => gradeLevel.LevelValue);
 
             return items;

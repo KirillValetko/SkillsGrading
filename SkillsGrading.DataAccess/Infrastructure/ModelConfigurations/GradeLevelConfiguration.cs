@@ -9,12 +9,10 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
         public void Configure(EntityTypeBuilder<GradeLevel> builder)
         {
             builder.Property(gl => gl.LevelName).IsRequired();
-            builder.Property(gl => gl.Salary).IsRequired();
             builder.Property(gl => gl.GradeRevisionInMonths).IsRequired();
             builder.Property(gl => gl.LevelValue).IsRequired();
             builder.Property(gl => gl.IsUsed).IsRequired();
             builder.Property(gl => gl.IsActive).IsRequired();
-            builder.Property(gl => gl.GroupId).IsRequired();
         }
     }
 }

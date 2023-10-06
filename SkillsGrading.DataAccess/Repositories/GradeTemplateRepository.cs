@@ -46,12 +46,9 @@ namespace SkillsGrading.DataAccess.Repositories
             if (filter.IncludeGradedSkillSets.HasValue && filter.IncludeGradedSkillSets.Value)
             {
                 items = items.Include(gradeTemplate => gradeTemplate.GradedSkillSets
-                    .Where(gradedSkillSet => gradedSkillSet.IsActive));
-            }
-
-            if (filter.SpecialtyId.HasValue)
-            {
-                items = items.Where(gradeTemplate => gradeTemplate.SpecialtyId.Equals(filter.SpecialtyId));
+                    .Where(gradedSkillSet => gradedSkillSet.IsActive)
+                    .OrderBy(gradedSkillSet => gradedSkillSet.SkillPosition)
+                    .ThenBy(gradedSkillSet => gradedSkillSet.GradeLevelPosition));
             }
 
             return items;
@@ -67,9 +64,6 @@ namespace SkillsGrading.DataAccess.Repositories
                 gradedSkillSet.Id = Guid.NewGuid();
                 gradedSkillSet.IsActive = true;
             }
-
-            item.Specialty.IsUsed = true;
-            _gradingContext.Entry(item.Specialty).State = EntityState.Modified;
         }
 
         protected override void SaveImportantInfo(GradeTemplate beforeSave, GradeTemplateDataModel forSave)
