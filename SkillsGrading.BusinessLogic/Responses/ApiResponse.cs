@@ -1,10 +1,17 @@
-﻿namespace SkillsGrading.Web.Responses
+﻿using System.Text.Json.Serialization;
+
+namespace SkillsGrading.BusinessLogic.Responses
 {
     public class ApiResponse<T>
     {
         public T Payload { get; set; }
         public string ErrorMessage { get; set; }
         public int ErrorCode { get; set; }
+
+        [JsonConstructor]
+        public ApiResponse()
+        {
+        }
 
         public ApiResponse(T payload)
         {
