@@ -12,6 +12,7 @@ namespace SkillsGrading.Web.Infrastructure
         {
             CreateMap<EmployeeDto, EmployeeModel>();
             CreateMap<EmployeeModel, EmployeeViewModel>();
+            CreateMap<GradeModel, GradeViewModel>();
             CreateMap<PaginationResponse<GradeTemplateModel>, PaginationResponse<GradeTemplateViewModel>>();
             CreateMap<GradeTemplateDto, GradeTemplateModel>()
                 .AfterMap((dto, model) =>
