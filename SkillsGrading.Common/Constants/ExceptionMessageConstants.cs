@@ -14,5 +14,7 @@
         public const string IdenticalSkills = "There are several identical skills in this template";
         public const string IdenticalGradeLevels = "There are several identical grade levels in this template";
         public const string EqualSpecialty = "There is already a grading template with this specialty";
+        public const string NotAuthorized = "There is no valid token";
+        public const string NoGrader = "This employee doesn't have grader";
     }
 }

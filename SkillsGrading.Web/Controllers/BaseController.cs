@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using SkillsGrading.Web.Responses;
+using SkillsGrading.BusinessLogic.Responses;
 
 namespace SkillsGrading.Web.Controllers
 {

@@ -5,7 +5,8 @@ using SkillsGrading.DataAccess.Models;
 
 namespace SkillsGrading.BusinessLogic.Services.Interfaces
 {
-    public interface ISpecialtyService : IBaseService<Specialty, SpecialtyDataModel, SpecialtyModel, SpecialtyFilter>
+    public interface IEmployeeService : IBaseService<Employee, EmployeeDataModel, EmployeeModel, EmployeeFilter>
     {
+        Task GradeAsync(GradingModel item);
     }
 }

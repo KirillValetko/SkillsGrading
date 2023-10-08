@@ -11,7 +11,6 @@ namespace SkillsGrading.DataAccess.Infrastructure.ModelConfigurations
             builder.Property(gt => gt.TemplateName).IsRequired();
             builder.Property(gt => gt.IsUsed).IsRequired();
             builder.Property(gt => gt.IsActive).IsRequired();
-            builder.Property(gt => gt.SpecialtyId).IsRequired();
         }
     }
 }

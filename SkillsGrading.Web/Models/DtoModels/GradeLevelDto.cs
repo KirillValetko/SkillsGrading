@@ -2,7 +2,6 @@
 {
     public class GradeLevelDto : BaseDtoLevel
     {
-        public int Salary { get; set; }
         public int GradeRevisionInMonths { get; set; }
     }
 }

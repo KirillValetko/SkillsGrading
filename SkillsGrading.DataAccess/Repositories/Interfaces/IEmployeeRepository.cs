@@ -4,7 +4,7 @@ using SkillsGrading.DataAccess.Models;
 
 namespace SkillsGrading.DataAccess.Repositories.Interfaces
 {
-    public interface ISpecialtyRepository : IBaseRepository<Specialty, SpecialtyDataModel, SpecialtyFilter>
+    public interface IEmployeeRepository : IBaseRepository<Employee, EmployeeDataModel, EmployeeFilter>
     {
     }
 }

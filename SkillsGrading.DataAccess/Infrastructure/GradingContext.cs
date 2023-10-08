@@ -9,12 +9,10 @@ namespace SkillsGrading.DataAccess.Infrastructure
         : base(options)
         {
         }
-
-        public DbSet<Specialty> Specialties { get; set; }
+        
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Grade> Grades { get; set; }
         public DbSet<GradeTemplate> GradeTemplates { get; set; }
-        public DbSet<GradeLevelGroup> GradeLevelGroups { get; set; }
         public DbSet<GradeLevel> GradeLevels { get; set; }
         public DbSet<GradedSkillSet> GradedSkillSets { get; set; }
         public DbSet<Skill> Skills { get; set; }

@@ -1,4 +1,5 @@
 using SkillsGrading.Web.Infrastructure.Configuration;
+using SkillsGrading.Web.Infrastructure.Middleware.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseVerification();
 
 app.MapControllers();
 

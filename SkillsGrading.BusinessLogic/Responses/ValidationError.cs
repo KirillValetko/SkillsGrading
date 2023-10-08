@@ -1,4 +1,4 @@
-﻿namespace SkillsGrading.Web.Responses
+﻿namespace SkillsGrading.BusinessLogic.Responses
 {
     public class ValidationError
     {

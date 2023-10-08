@@ -9,7 +9,6 @@ namespace SkillsGrading.Web.Validators
         {
             RuleFor(gl => gl.LevelName).NotEmpty();
             RuleFor(gl => gl.LevelValue).GreaterThan(0).NotEmpty();
-            RuleFor(gl => gl.Salary).GreaterThan(0).NotEmpty();
             RuleFor(gl => gl.GradeRevisionInMonths).GreaterThan(0).NotEmpty();
         }
     }

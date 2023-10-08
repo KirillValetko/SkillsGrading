@@ -9,14 +9,19 @@ namespace SkillsGrading.DataAccess.Infrastructure
     {
         public DalMapperProfile()
         {
+            CreateMap<PaginationResponse<Employee>, PaginationResponse<EmployeeDataModel>>();
+            CreateMap<Employee, EmployeeDataModel>().ForMember(dest => dest.Grades,
+                opt => opt.MapFrom(
+                    src => src.Grades
+                        .GroupBy(grade => grade.GradeTemplateId)
+                        .Select(gradeGroup => 
+                            gradeGroup.OrderByDescending(grade => grade.GradeDate).First())));
+            CreateMap<EmployeeDataModel, Employee>();
+            CreateMap<Grade, GradeDataModel>().ReverseMap();
             CreateMap<PaginationResponse<GradeTemplate>, PaginationResponse<GradeTemplateDataModel>>();
             CreateMap<GradeTemplate, GradeTemplateDataModel>().ReverseMap();
             CreateMap<PaginationResponse<GradedSkillSet>, PaginationResponse<GradedSkillSetDataModel>>();
             CreateMap<GradedSkillSet, GradedSkillSetDataModel>().ReverseMap();
-            CreateMap<PaginationResponse<Specialty>, PaginationResponse<SpecialtyDataModel>>();
-            CreateMap<Specialty, SpecialtyDataModel>().ReverseMap();
-            CreateMap<PaginationResponse<GradeLevelGroup>, PaginationResponse<GradeLevelGroupDataModel>>();
-            CreateMap<GradeLevelGroup, GradeLevelGroupDataModel>().ReverseMap();
             CreateMap<PaginationResponse<GradeLevel>, PaginationResponse<GradeLevelDataModel>>();
             CreateMap<GradeLevel, GradeLevelDataModel>().ReverseMap();
             CreateMap<PaginationResponse<Skill>, PaginationResponse<SkillDataModel>>();
