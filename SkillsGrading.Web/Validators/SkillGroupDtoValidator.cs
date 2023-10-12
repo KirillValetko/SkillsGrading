@@ -9,6 +9,7 @@ namespace SkillsGrading.Web.Validators
         {
             RuleFor(sg => sg.GroupName).NotEmpty();
             RuleFor(sg => sg.SkillLevels).NotEmpty();
+            RuleForEach(sg => sg.SkillLevels).SetValidator(new SkillLevelDtoValidator());
         }
     }
 }
