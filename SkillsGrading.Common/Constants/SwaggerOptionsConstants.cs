@@ -7,6 +7,5 @@
         public const string Description = "Skill grading";
         public const string SecurityScheme = "Bearer";
         public const string DefinitionName = "Authorization";
-        public const string RequirementScheme = "oauth2";
     }
 }

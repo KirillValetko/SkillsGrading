@@ -11,7 +11,6 @@ builder.Services.InitRepositories();
 builder.Services.InitServices();
 builder.Services.InitHelpers();
 builder.Services.InitMapper();
-builder.Services.InitJwt();
 builder.Services.InitSwagger();
 builder.Services.InitModelValidation();
 
@@ -25,7 +24,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseVerification();
