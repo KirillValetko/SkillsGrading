@@ -5,11 +5,11 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
 {
     public static class GradingContextConfiguration
     {
-        private const string ConnectionString = "GradingDB";
+        private const string ConnectionString = "ConnectionStrings:GradingDB";
         public static void InitDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<GradingContext>(opt =>
-                opt.UseSqlServer(configuration.GetConnectionString(ConnectionString)));
+                opt.UseSqlServer(configuration[ConnectionString]));
         }
     }
 }
