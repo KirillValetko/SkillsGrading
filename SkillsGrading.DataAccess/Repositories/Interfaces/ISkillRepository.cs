@@ -6,5 +6,6 @@ namespace SkillsGrading.DataAccess.Repositories.Interfaces
 {
     public interface ISkillRepository : IBaseRepository<Skill, SkillDataModel, SkillFilter>
     {
+        void SetSkillsUsed(List<SkillDataModel> skills);
     }
 }

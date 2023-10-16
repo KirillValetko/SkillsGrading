@@ -22,23 +22,6 @@ namespace SkillsGrading.Web.Infrastructure.Configuration
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = SwaggerOptionsConstants.SecurityScheme
                 });
-                opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = SwaggerOptionsConstants.SecurityScheme
-                            },
-                            Scheme = SwaggerOptionsConstants.RequirementScheme,
-                            Name = SwaggerOptionsConstants.SecurityScheme,
-                            In = ParameterLocation.Header
-                        },
-                        new List<string>()
-                    }
-                });
             });
         }
     }

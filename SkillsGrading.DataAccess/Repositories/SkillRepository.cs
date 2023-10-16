@@ -26,10 +26,13 @@ namespace SkillsGrading.DataAccess.Repositories
                 items = items.Where(skill => skill.SkillName.Contains(filter.SkillName));
             }
 
-            items = items.Include(skill => skill.SkillGroup)
-                .ThenInclude(skillGroup => skillGroup.SkillLevels
-                    .Where(skillLevel => skillLevel.IsActive)
-                    .OrderBy(skillLevel => skillLevel.LevelValue));
+            if (!filter.IncludeSkillGroups.HasValue || filter.IncludeSkillGroups.Value)
+            {
+                items = items.Include(skill => skill.SkillGroup)
+                    .ThenInclude(skillGroup => skillGroup.SkillLevels
+                        .Where(skillLevel => skillLevel.IsActive)
+                        .OrderBy(skillLevel => skillLevel.LevelValue));
+            }
 
             return items;
         }
@@ -49,6 +52,17 @@ namespace SkillsGrading.DataAccess.Repositories
             item.IsUsed = false;
             item.SkillGroup.IsUsed = true;
             _gradingContext.Entry(item.SkillGroup).State = EntityState.Modified;
+        }
+
+        public void SetSkillsUsed(List<SkillDataModel> skills)
+        {
+            skills.ForEach(skill => skill.IsUsed = true);
+            var mappedSkills = _mapper.Map<List<Skill>>(skills);
+
+            foreach (var skill in mappedSkills)
+            {
+                _gradingContext.Entry(skill).State = EntityState.Modified;
+            }
         }
     }
 }

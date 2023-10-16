@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using SkillsGrading.Web.Responses;
+using SkillsGrading.BusinessLogic.Responses;
 
 namespace SkillsGrading.Web.Infrastructure.Configuration
 {

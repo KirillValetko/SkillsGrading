@@ -4,7 +4,7 @@
     {
         public string TemplateName { get; set; }
         public bool IsUsed { get; set; }
-
+        
         public List<Grade> Grades { get; set; }
         public List<GradedSkillSet> GradedSkillSets { get; set; }
     }
