@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using SkillsGrading.BusinessLogic.Responses;
 using Npgsql;
-using SkillsGrading.Web.Responses;
 
 namespace SkillsGrading.Web.Controllers
 {
